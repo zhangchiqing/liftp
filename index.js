@@ -70,3 +70,14 @@ exports.secondp = exports.liftp(exports.always(exports.id));
 exports.mapp = exports.curry2(function(fn, p) {
   return p.then(fn);
 });
+
+// traversep :: (a -> Promise b) -> Array a -> Promise Array b
+exports.traversep = function() {
+
+};
+
+// sequensep :: Array Promise a -> Promise Array a
+exports.sequensep = function() {
+
+};
+
