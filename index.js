@@ -1,6 +1,4 @@
 'use strict';
-var Promise = require('bluebird');
-
 // purep :: a -> Promise a
 exports.purep = function(a) {
   return Promise.resolve(a);

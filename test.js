@@ -1,6 +1,5 @@
 'use strict';
 
-var Promise = require('bluebird');
 var expect = require('chai').expect;
 var liftp = require('./index').liftp;
 var firstp = require('./index').firstp;
@@ -27,8 +26,7 @@ describe('liftp', function() {
     return liftp(add)(Promise.reject(1), Promise.resolve(2))
     .then(function() {
       throw new Error('should fail');
-    })
-    .catch(function(r) {
+    }, function(r) {
       expect(r).to.equal(1);
     });
   });
@@ -37,8 +35,7 @@ describe('liftp', function() {
     return liftp(add)(Promise.resolve(1), Promise.reject(2))
     .then(function() {
       throw new Error('should fail');
-    })
-    .catch(function(r) {
+    }, function(r) {
       expect(r).to.equal(2);
     });
   });
