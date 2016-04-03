@@ -96,8 +96,9 @@ exports.sequencep = function(arr) {
   var ps = [],
       len = arr.length,
       failed = false;
+
   return new Promise(function(resolve, reject) {
-    function resolveOne(p, index) {
+    mapIndexed(function(p, index) {
       p.then(function(pv) {
         if (failed) { return ; }
         ps[index] = pv;
@@ -109,8 +110,8 @@ exports.sequencep = function(arr) {
         failed = true;
         reject(err);
       });
-    }
-    mapIndexed(resolveOne)(arr);
+
+    })(arr);
   });
 };
 
