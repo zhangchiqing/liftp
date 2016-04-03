@@ -52,6 +52,10 @@ var toArray = function(a) {
 };
 
 var fold = function(iter, initial, arr) {
+  if (arr.reduce) {
+    return arr.reduce(iter, initial);
+  }
+
   if (!arr.length) {
     return initial;
   }
@@ -62,6 +66,10 @@ var fold = function(iter, initial, arr) {
 
 var map = function(f) {
   return function(arr) {
+    if (arr.map) {
+      return arr.map(f);
+    }
+
     return fold(function(memo, item) {
       return memo.concat([f(item)]);
     }, [], arr);
