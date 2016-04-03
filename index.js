@@ -91,6 +91,8 @@ exports.mapp = curry2(function(fn, p) {
 
 // sequencep :: Array Promise a -> Promise Array a
 exports.sequencep = function(arr) {
+  if (Promise.all) { return Promise.all(arr); }
+
   var ps = [],
       len = arr.length,
       failed = false;
@@ -143,5 +145,3 @@ exports.firstp = exports.liftp(always);
 // alias *> secondp
 // secondp :: Promise a -> Promise b -> Promise b
 exports.secondp = exports.liftp(always(id));
-
-exports.allp = exports.sequencep;
