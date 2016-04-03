@@ -9,6 +9,7 @@ var purep = require('./index').purep;
 var mapp = require('./index').mapp;
 var sequencep = require('./index').sequencep;
 var traversep = require('./index').traversep;
+var pipep = require('./index').pipep;
 
 var add = function(a, b) {
   return a + b;
@@ -204,6 +205,15 @@ describe('traversep', function() {
     return traversep(resolveLater)([1, 2, 3])
     .then(function(r) {
       expect(r).to.eql([3, 6, 9]);
+    });
+  });
+});
+
+describe('pipep', function() {
+  it('should resolve', function() {
+    return pipep(resolveLater, resolveLater)(1)
+    .then(function(r) {
+      expect(r).to.equal(9);
     });
   });
 });
