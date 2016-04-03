@@ -20,9 +20,7 @@
     "url": "https://github.com/zhangchiqing/liftp/issues"
   },
   "homepage": "https://github.com/zhangchiqing/liftp#readme",
-  "dependencies": {
-    "es6-promise": "^3.1.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^2.4.5"
