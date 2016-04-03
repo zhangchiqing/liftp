@@ -52,10 +52,6 @@ var toArray = function(a) {
 };
 
 var fold = function(iter, initial, arr) {
-  if (arr.reduce) {
-    return arr.reduce(iter, initial);
-  }
-
   if (!arr.length) {
     return initial;
   }
@@ -66,13 +62,17 @@ var fold = function(iter, initial, arr) {
 
 var map = function(f) {
   return function(arr) {
-    if (arr.map) {
-      return arr.map(f);
-    }
-
     return fold(function(memo, item) {
       return memo.concat([f(item)]);
     }, [], arr);
+  };
+};
+
+var mapIndexed = function(f) {
+  return function(arr) {
+    return fold(function(memo, item) {
+      return [memo[0].concat([f(item, memo[1])]), memo[1] + 1];
+    }, [[], 0], arr);
   };
 };
 
@@ -90,9 +90,28 @@ exports.mapp = curry2(function(fn, p) {
   return p.then(fn);
 });
 
+
 // sequencep :: Array Promise a -> Promise Array a
 exports.sequencep = function(arr) {
-  return Promise.all(arr);
+  var ps = [],
+      len = arr.length,
+      failed = false;
+  return new Promise(function(resolve, reject) {
+    function resolveOne(p, index) {
+      p.then(function(pv) {
+        if (failed) { return ; }
+        ps[index] = pv;
+        len--;
+        if (len === 0) {
+          resolve(ps);
+        }
+      }, function(err) {
+        failed = true;
+        reject(err);
+      });
+    }
+    mapIndexed(resolveOne)(arr);
+  });
 };
 
 // traversep :: (a -> Promise b) -> Array a -> Promise Array b

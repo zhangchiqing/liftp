@@ -190,6 +190,24 @@ describe('sequencep', function() {
       expect(r).to.eql([1, 2]);
     });
   });
+
+  it('should fail one', function() {
+    return sequencep([Promise.reject(1), Promise.resolve(2)])
+    .then(function() {
+      throw new Error('should fail');
+    }, function(r) {
+      expect(r).to.equal(1);
+    });
+  });
+
+  it('should fail both', function() {
+    return sequencep([Promise.reject(1), Promise.reject(2)])
+    .then(function() {
+      throw new Error('should fail');
+    }, function(r) {
+      expect(r).to.equal(1);
+    });
+  });
 });
 
 var resolveLater = function(a) {
