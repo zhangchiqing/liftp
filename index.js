@@ -7,13 +7,13 @@ exports.purep = function(a) {
 };
 
 // apply :: (a -> b ... -> n -> x) -> [a, b ... n] -> x
-exports.apply = function(fn) {
+var apply = function(fn) {
   return function(args) {
     return fn.apply(this, args);
   };
 };
 
-exports.curry2 = function(fn) {
+var curry2 = function(fn) {
   return function (a, b) {
     if (b === undefined) {
       return function(b, c) {
@@ -30,20 +30,20 @@ exports.curry2 = function(fn) {
 };
 
 // id :: a -> a
-exports.id = function(a) {
+var id = function(a) {
   return a;
 };
 
 // always :: a -> b -> a
-// > exports.always(1, 2)
+// > always(1, 2)
 // 1
-// > exports.always(1)(2)
+// > always(1)(2)
 // 1
-// > exports.always(exports.id)(1, 2)
+// > always(id)(1, 2)
 // 2
-// > exports.always(exports.id)(1)(2)
+// > always(id)(1)(2)
 // 2
-exports.always = exports.curry2(exports.id);
+var always = curry2(id);
 
 var slice = Array.prototype.slice;
 
@@ -56,20 +56,20 @@ var toArray = function(a) {
 //          -> Promise x
 exports.liftp = function(fn) {
   return function() {
-    return Promise.all(toArray(arguments)).then(exports.apply(fn));
+    return Promise.all(toArray(arguments)).then(apply(fn));
   };
 };
 
 // alias <* firstp
 // firstp :: Promise a -> Promise b -> Promise a
-exports.firstp = exports.liftp(exports.always);
+exports.firstp = exports.liftp(always);
 
 // alias *> secondp
 // secondp :: Promise a -> Promise b -> Promise b
-exports.secondp = exports.liftp(exports.always(exports.id));
+exports.secondp = exports.liftp(always(id));
 
 // mapp :: (a -> b) -> Promise a -> Promise b
-exports.mapp = exports.curry2(function(fn, p) {
+exports.mapp = curry2(function(fn, p) {
   return p.then(fn);
 });
 
@@ -78,27 +78,27 @@ exports.sequencep = function(arr) {
   return Promise.all(arr);
 };
 
-exports.fold = function(iter, initial, arr) {
+var fold = function(iter, initial, arr) {
   if (!arr.length) {
     return initial;
   }
 
   var newInitial = iter(initial, arr[0]);
-  return exports.fold(iter, newInitial, slice.call(arr, 1));
+  return fold(iter, newInitial, slice.call(arr, 1));
 };
 
-exports.map = function(f) {
+var map = function(f) {
   return function(arr) {
-    return exports.fold(function(memo, item) {
+    return fold(function(memo, item) {
       return memo.concat([f(item)]);
     }, [], arr);
   };
 };
 
-exports.pipe = function() {
+var pipe = function() {
   var fns = toArray(arguments);
   return function(a) {
-    return exports.fold(function(acc, fn) {
+    return fold(function(acc, fn) {
       return fn(acc);
     }, a, fns);
   };
@@ -106,14 +106,15 @@ exports.pipe = function() {
 
 // traversep :: (a -> Promise b) -> Array a -> Promise Array b
 exports.traversep = function(fn) {
-  return exports.pipe(exports.map(fn), exports.sequencep);
+  return pipe(map(fn), exports.sequencep);
 };
 
 exports.pipep = function() {
   var fns = toArray(arguments);
   return function(a) {
-    return exports.fold(function(accp, fn) {
+    return fold(function(accp, fn) {
       return accp.then(fn);
     }, exports.purep(a), fns);
   };
 };
+
