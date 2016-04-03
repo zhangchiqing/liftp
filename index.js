@@ -2,7 +2,9 @@
 var Promise = require('bluebird');
 
 // purep :: a -> Promise a
-exports.purep = Promise.resolve;
+exports.purep = function(a) {
+  return Promise.resolve(a);
+};
 
 // apply :: (a -> b ... -> n -> x) -> [a, b ... n] -> x
 exports.apply = function(fn) {
@@ -71,8 +73,10 @@ exports.mapp = exports.curry2(function(fn, p) {
   return p.then(fn);
 });
 
-// sequensep :: Array Promise a -> Promise Array a
-exports.sequensep = Promise.all;
+// sequencep :: Array Promise a -> Promise Array a
+exports.sequencep = function(arr) {
+  return Promise.all(arr);
+};
 
 exports.fold = function(iter, initial, arr) {
   if (!arr.length) {
@@ -100,5 +104,14 @@ exports.pipe = function() {
 
 // traversep :: (a -> Promise b) -> Array a -> Promise Array b
 exports.traversep = function(fn) {
-  return exports.pipe(exports.map(fn), exports.sequensep);
+  return exports.pipe(exports.map(fn), exports.sequencep);
+};
+
+exports.pipep = function() {
+  var fns = toArray(arguments);
+  return function(a) {
+    return exports.fold(function(accp, fn) {
+      return accp.then(fn);
+    }, exports.purep(a), fns);
+  };
 };
