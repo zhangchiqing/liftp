@@ -1,6 +1,8 @@
 'use strict';
 var Promise = require('bluebird');
 
+exports.purep = Promise.resolve;
+
 exports.apply = function(fn) {
   return function(args) {
     return fn.apply(this, args);
@@ -55,4 +57,6 @@ exports.firstp = exports.liftp(exports.always);
 // *>
 exports.secondp = exports.liftp(exports.always(exports.id));
 
-exports.purep = Promise.resolve;
+exports.mapp = exports.curry2(function(fn, p) {
+  return p.then(fn);
+});
