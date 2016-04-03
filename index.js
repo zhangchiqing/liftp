@@ -7,7 +7,7 @@ exports.apply = function(fn) {
 };
 
 exports.curry2 = function(fn) {
-  return function _curried(a, b) {
+  return function curried(a, b) {
     if (b === undefined) {
       return function(b, c) {
         if (c === undefined) {
