@@ -71,13 +71,34 @@ exports.mapp = exports.curry2(function(fn, p) {
   return p.then(fn);
 });
 
-// traversep :: (a -> Promise b) -> Array a -> Promise Array b
-exports.traversep = function() {
-
-};
-
 // sequensep :: Array Promise a -> Promise Array a
-exports.sequensep = function() {
+exports.sequensep = Promise.all;
 
+exports.fold = function(iter, initial, arr) {
+  if (!arr.length) {
+    return initial;
+  }
+
+  var newInitial = iter(initial, arr[0]);
+  return exports.fold(iter, newInitial, arr.slice(1));
 };
 
+exports.map = function(f, arr) {
+  return exports.fold(function(memo, item) {
+    return memo.concat([f(item)]);
+  }, [], arr);
+};
+
+exports.pipe = function() {
+  var fns = toArray(arguments);
+  return function(a) {
+    return exports.fold(function(acc, fn) {
+      return fn(acc);
+    }, a, fns);
+  };
+};
+
+// traversep :: (a -> Promise b) -> Array a -> Promise Array b
+exports.traversep = function(fn) {
+  return exports.pipe(exports.map(fn), exports.sequensep);
+};
