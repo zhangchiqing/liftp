@@ -74,6 +74,20 @@ var mapIndexed = function(f) {
   };
 };
 
+// > filter(function(x) { return x > 0; })([1,2,-1])
+// [1,2]
+var filter = function(f) {
+  return function(arr) {
+    return fold(function(memo, value) {
+      if (f(value)) {
+        return memo.concat([value]);
+      } else {
+        return memo;
+      }
+    }, [], arr);
+  };
+};
+
 var pipe = function() {
   var fns = toArray(arguments);
   return function(a) {
@@ -84,9 +98,11 @@ var pipe = function() {
 };
 
 // mapp :: (a -> b) -> Promise a -> Promise b
-exports.mapp = curry2(function(fn, p) {
-  return p.then(fn);
-});
+exports.mapp = function(fn) {
+  return function(p) {
+    return p.then(fn);
+  };
+};
 
 
 // sequencep :: Array Promise a -> Promise Array a
@@ -145,3 +161,8 @@ exports.firstp = exports.liftp(always);
 // alias *> secondp
 // secondp :: Promise a -> Promise b -> Promise b
 exports.secondp = exports.liftp(always(id));
+
+// filterp :: (a -> Boolean) -> Array Promise a -> Promise Array a
+exports.filterp = function(fn) {
+  return pipe(exports.sequencep, exports.mapp(filter(fn)));
+};

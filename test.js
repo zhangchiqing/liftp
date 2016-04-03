@@ -9,6 +9,7 @@ var mapp = require('./index').mapp;
 var sequencep = require('./index').sequencep;
 var traversep = require('./index').traversep;
 var pipep = require('./index').pipep;
+var filterp = require('./index').filterp;
 
 var add = function(a, b) {
   return a + b;
@@ -173,7 +174,7 @@ describe('validation', function() {
 
 describe('mapp', function() {
   it('should resolve', function() {
-    return mapp(function(x) { return x * 3; }, Promise.resolve(1))
+    return mapp(function(x) { return x * 3; })(Promise.resolve(1))
     .then(function(r) {
       expect(r).to.equal(3);
     });
@@ -229,6 +230,24 @@ describe('pipep', function() {
     return pipep(resolveLater, resolveLater)(1)
     .then(function(r) {
       expect(r).to.equal(9);
+    });
+  });
+});
+
+describe('filterp', function() {
+  it('should resolve', function() {
+    var gt = function(a) {
+      return function(b) {
+        return b > a;
+      };
+    };
+    var p =  filterp(gt(3))([
+      Promise.resolve(1),
+      Promise.resolve(4),
+      Promise.resolve(6),
+      Promise.resolve(7)]);
+    return p.then(function(arr) {
+      expect(arr).to.eql([4,6,7]);
     });
   });
 });
