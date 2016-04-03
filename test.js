@@ -5,6 +5,7 @@ var liftp = require('./index').liftp;
 var firstp = require('./index').firstp;
 var secondp = require('./index').secondp;
 var purep = require('./index').purep;
+var mapp = require('./index').mapp;
 var expect = require('chai').expect;
 
 var add = function(a, b) {
@@ -12,7 +13,7 @@ var add = function(a, b) {
 };
 
 describe('liftp', function() {
-  it('success', function() {
+  it('should resolve', function() {
     return liftp(add)(Promise.resolve(1), Promise.resolve(2))
     .then(function(r) {
       expect(r).to.equal(3);
@@ -52,7 +53,7 @@ describe('liftp', function() {
 });
 
 describe('firstp', function() {
-  it('success', function() {
+  it('resolve', function() {
     return firstp(Promise.resolve(1), Promise.resolve(2))
     .then(function(r) {
       expect(r).to.equal(1);
@@ -91,7 +92,7 @@ describe('firstp', function() {
 });
 
 describe('secondp', function() {
-  it('success', function() {
+  it('resolve', function() {
     return secondp(Promise.resolve(1), Promise.resolve(2))
     .then(function(r) {
       expect(r).to.equal(2);
@@ -146,7 +147,7 @@ describe('validation', function() {
     };
   };
 
-  it('should success', function() {
+  it('should resolve', function() {
     var q = { email: 'a@b.c', password: 'ppp' };
     return liftp(query)(
       secondp(notEmpty('email')(q.email), purep(q.email)),
@@ -169,3 +170,13 @@ describe('validation', function() {
     });
   });
 });
+
+describe('mapp', function() {
+  it('should resolve', function() {
+    return mapp(function(x) { return x * 3; }, Promise.resolve(1))
+    .then(function(r) {
+      expect(r).to.equal(3);
+    });
+  });
+});
+
