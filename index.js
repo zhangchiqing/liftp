@@ -143,3 +143,5 @@ exports.firstp = exports.liftp(always);
 // alias *> secondp
 // secondp :: Promise a -> Promise b -> Promise b
 exports.secondp = exports.liftp(always(id));
+
+exports.allp = exports.sequencep;
