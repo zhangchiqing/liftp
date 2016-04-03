@@ -84,13 +84,15 @@ exports.fold = function(iter, initial, arr) {
   }
 
   var newInitial = iter(initial, arr[0]);
-  return exports.fold(iter, newInitial, arr.slice(1));
+  return exports.fold(iter, newInitial, slice.call(arr, 1));
 };
 
-exports.map = function(f, arr) {
-  return exports.fold(function(memo, item) {
-    return memo.concat([f(item)]);
-  }, [], arr);
+exports.map = function(f) {
+  return function(arr) {
+    return exports.fold(function(memo, item) {
+      return memo.concat([f(item)]);
+    }, [], arr);
+  };
 };
 
 exports.pipe = function() {
@@ -104,7 +106,9 @@ exports.pipe = function() {
 
 // traversep :: (a -> Promise b) -> Array a -> Promise Array b
 exports.traversep = function(fn) {
-  return exports.pipe(exports.map(fn), exports.sequencep);
+  return function(arr) {
+    return exports.sequencep(exports.map(fn)(arr));
+  };
 };
 
 exports.pipep = function() {

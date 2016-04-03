@@ -1,12 +1,14 @@
 'use strict';
 
 var Promise = require('bluebird');
+var expect = require('chai').expect;
 var liftp = require('./index').liftp;
 var firstp = require('./index').firstp;
 var secondp = require('./index').secondp;
 var purep = require('./index').purep;
 var mapp = require('./index').mapp;
-var expect = require('chai').expect;
+var sequencep = require('./index').sequencep;
+var traversep = require('./index').traversep;
 
 var add = function(a, b) {
   return a + b;
@@ -180,3 +182,28 @@ describe('mapp', function() {
   });
 });
 
+describe('sequencep', function() {
+  it('should resolve', function() {
+    return sequencep([Promise.resolve(1), Promise.resolve(2)])
+    .then(function(r) {
+      expect(r).to.eql([1, 2]);
+    });
+  });
+});
+
+var resolveLater = function(a) {
+  return new Promise(function(resolve) {
+    setTimeout(function() {
+      resolve(a * 3);
+    }, 10);
+  });
+};
+
+describe('traversep', function() {
+  it('should resolve', function() {
+    return traversep(resolveLater)([1, 2, 3])
+    .then(function(r) {
+      expect(r).to.eql([3, 6, 9]);
+    });
+  });
+});
