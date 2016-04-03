@@ -1,14 +1,15 @@
 {
-  "name": "liftp",
+  "name": "promisell",
   "version": "1.0.0",
   "description": "Lift Promise",
   "main": "index.js",
   "scripts": {
     "test": "mocha test.js"
   },
+  "engines": { "node" : ">=0.12" },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zhangchiqing/liftp.git"
+    "url": "git+https://github.com/zhangchiqing/promisell.git"
   },
   "keywords": [
     "Lift",
@@ -17,11 +18,10 @@
   "author": "Leo Zhang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/zhangchiqing/liftp/issues"
+    "url": "https://github.com/zhangchiqing/promisell/issues"
   },
-  "homepage": "https://github.com/zhangchiqing/liftp#readme",
+  "homepage": "https://github.com/zhangchiqing/promisell#readme",
   "dependencies": {
-    "bluebird": "^3.3.4"
   },
   "devDependencies": {
     "chai": "^3.5.0",

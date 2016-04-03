@@ -166,3 +166,5 @@ exports.secondp = exports.liftp(always(id));
 exports.filterp = function(fn) {
   return pipe(exports.sequencep, exports.mapp(filter(fn)));
 };
+
+// TODO: foldp, racep
