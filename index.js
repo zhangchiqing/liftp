@@ -106,9 +106,7 @@ exports.pipe = function() {
 
 // traversep :: (a -> Promise b) -> Array a -> Promise Array b
 exports.traversep = function(fn) {
-  return function(arr) {
-    return exports.sequencep(exports.map(fn)(arr));
-  };
+  return exports.pipe(exports.map(fn), exports.sequencep);
 };
 
 exports.pipep = function() {
