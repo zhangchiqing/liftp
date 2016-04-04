@@ -167,4 +167,17 @@ exports.filterp = function(fn) {
   return pipe(exports.sequencep, exports.mapp(filter(fn)));
 };
 
-// TODO: foldp, racep
+// foldp :: (b -> a -> Promise b) -> b -> Array a -> Promise a
+exports.foldp = function(fn) {
+  return function(init) {
+    return function(arr) {
+      if (!arr.length) {
+        return init;
+      }
+
+      return fn(init, arr[0]).then(function(b) {
+        return exports.foldp(fn)(b)(slice.call(arr, 1));
+      });
+    };
+  };
+};

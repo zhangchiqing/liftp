@@ -10,6 +10,7 @@ var sequencep = require('./index').sequencep;
 var traversep = require('./index').traversep;
 var pipep = require('./index').pipep;
 var filterp = require('./index').filterp;
+var foldp = require('./index').foldp;
 
 var add = function(a, b) {
   return a + b;
@@ -248,6 +249,17 @@ describe('filterp', function() {
       Promise.resolve(7)]);
     return p.then(function(arr) {
       expect(arr).to.eql([4,6,7]);
+    });
+  });
+});
+
+describe('foldp', function() {
+  it('should resolve', function() {
+    return foldp(function(b, a) {
+      return Promise.resolve(b + a);
+    })(1)([2, 3, 4])
+    .then(function(r) {
+      expect(r).to.equal(10);
     });
   });
 });
